@@ -1,0 +1,23 @@
+{
+  "name": "@altium-developer/docusaurus-theme",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Look and feel of the Altium developer documentation sites: CSS, fonts, logo, Markdown-twin links and the search UI shell.",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./search": "./search/core.mjs",
+    "./css/theme.css": "./css/theme.css",
+    "./theme/*": "./theme/*",
+    "./package.json": "./package.json"
+  },
+  "files": ["index.js", "css", "search", "static", "theme"],
+  "peerDependencies": {
+    "@docusaurus/core": "^3.10.0",
+    "@docusaurus/plugin-content-docs": "^3.10.0",
+    "@docusaurus/theme-classic": "^3.10.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  }
+}
