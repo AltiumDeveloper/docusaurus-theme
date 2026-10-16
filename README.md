@@ -19,13 +19,23 @@ Each site keeps its own search ranking (record kinds, tabs, boosts), its index b
 ## Install
 
 The theme is not on npm. Each release attaches the package tarball to its
-[GitHub Release](https://github.com/AltiumDeveloper/docusaurus-theme/releases), and a site depends on that URL:
+[GitHub Release](https://github.com/AltiumDeveloper/docusaurus-theme/releases), and a site depends on that URL.
+
+npm 12 and later refuse URL dependencies by default (`EALLOWREMOTE`). Allow them in the site's `.npmrc`, next to its `package.json`, before installing:
+
+```ini
+allow-remote=root
+```
+
+`root` allows only the URLs listed in the site's own `package.json`, not URLs that other packages pull in. npm 10 and 11 accept the setting too. Commit the file, so CI and every contributor install the same way.
+
+Then install:
 
 ```bash
 npm install https://github.com/AltiumDeveloper/docusaurus-theme/releases/download/v0.1.0/altium-developer-docusaurus-theme-0.1.0.tgz
 ```
 
-This needs no token and no registry configuration. The lockfile records the tarball's checksum, and a release asset is never replaced, so `npm ci` installs exactly what was tested. Each tarball carries a build provenance attestation:
+No token or registry configuration is needed. The lockfile records the tarball's checksum, and a release asset is never replaced, so `npm ci` installs exactly what was tested. Each tarball carries a build provenance attestation:
 
 ```bash
 gh attestation verify altium-developer-docusaurus-theme-0.1.0.tgz --repo AltiumDeveloper/docusaurus-theme
@@ -89,7 +99,7 @@ The theme ships untranspiled `.js` with JSX. Docusaurus compiles it because the 
 
 ## Moving a site onto the theme
 
-1. Install the release tarball and configure the theme as shown in [Use](#use). Remove `plugins/search-index.cjs` from `plugins`.
+1. Add `allow-remote=root` to the site's `.npmrc`, install the release tarball ([Install](#install)), and configure the theme as shown in [Use](#use). Remove `plugins/search-index.cjs` from `plugins`.
 2. Delete the copies the theme now provides:
    - `static/img/altium-logo.svg` and `static/img/favicon.svg`
    - `src/css/fonts/`
