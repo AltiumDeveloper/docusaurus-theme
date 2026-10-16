@@ -4,8 +4,8 @@
 //
 //   themes: [['@altium-developer/docusaurus-theme', {
 //     search: {
-//       engine: require.resolve('./src/search/engine.mjs'),   // the site's ranking: KINDS, GROUPS, loadIndex, search, …
-//       index: 'static/search-index.json',                    // written by the site before `docusaurus build`
+//       engine: 'src/search/engine.mjs',      // the site's ranking: KINDS, GROUPS, loadIndex, search, … (site-relative)
+//       index: 'static/search-index.json',    // written by the site before `docusaurus build` (site-relative)
 //       recentKey, label, placeholder, intro,
 //       examples: [{ query, text }],                          // query: a string, or an array of alternatives
 //     },
@@ -18,7 +18,7 @@
 // static/ as-is). static/search-index.json is still copied as-is: it is the fallback name.
 const { createHash } = require('node:crypto');
 const { existsSync, readFileSync, writeFileSync } = require('node:fs');
-const { join } = require('node:path');
+const { join, resolve } = require('node:path');
 
 const NAME = 'altium-docusaurus-theme';
 const ENGINE_ALIAS = '@altium-docusaurus-theme/search-engine';
@@ -28,14 +28,15 @@ const hashedName = (bytes) => `search-index.${contentHash(bytes)}.json`;
 
 function altiumTheme(context, options = {}) {
   const { engine, index = 'static/search-index.json', ...search } = options.search ?? {};
-  const indexPath = join(context.siteDir, index);
+  const indexPath = resolve(context.siteDir, index);
+  const enginePath = engine ? resolve(context.siteDir, engine) : require.resolve('./search/no-engine.mjs');
   return {
     name: NAME,
     getThemePath: () => join(__dirname, 'theme'),
     getClientModules: () => [require.resolve('./css/theme.css')],
     getPathsToWatch: () => [indexPath],
     configureWebpack: () => ({
-      resolve: { alias: { [ENGINE_ALIAS]: engine ?? require.resolve('./search/no-engine.mjs') } },
+      resolve: { alias: { [ENGINE_ALIAS]: enginePath } },
     }),
     async loadContent() {
       if (!existsSync(indexPath) || process.env.NODE_ENV !== 'production') return { file: null, bytes: null };

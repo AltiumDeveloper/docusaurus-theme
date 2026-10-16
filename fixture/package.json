@@ -1,0 +1,20 @@
+{
+  "name": "docusaurus-theme-fixture",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A minimal site that builds with the theme, so CI proves it works the way the real sites use it.",
+  "scripts": {
+    "build": "node scripts/search-index.mjs && docusaurus build && node scripts/check.mjs",
+    "start": "node scripts/search-index.mjs && docusaurus start",
+    "serve": "docusaurus serve"
+  },
+  "dependencies": {
+    "@altium-developer/docusaurus-theme": "file:..",
+    "@docusaurus/core": "^3.10.2",
+    "@docusaurus/preset-classic": "^3.10.2",
+    "@mdx-js/react": "^3.1.1",
+    "minisearch": "^7.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}

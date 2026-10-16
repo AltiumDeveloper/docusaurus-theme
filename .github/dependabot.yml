@@ -1,0 +1,20 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns:
+          - "*"
+  # The fixture site only (the theme itself has no dependencies): keeps CI building against current Docusaurus 3.x,
+  # so a Docusaurus release that breaks the theme shows up here before it reaches the sites.
+  - package-ecosystem: npm
+    directory: /fixture
+    schedule:
+      interval: weekly
+    groups:
+      docusaurus:
+        patterns:
+          - "*"

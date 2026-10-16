@@ -1,0 +1,44 @@
+name: CI
+
+# Unit tests, then the fixture site built from the packed tarball — the exact file a release attaches and the sites
+# install — so a file missing from `files`, or a component Docusaurus would not transpile from node_modules, fails here.
+# The release workflow reuses this job and attaches the tarball it uploads.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: fixture/package-lock.json
+      - run: npm test
+      - name: Pack
+        id: pack
+        run: |
+          mkdir -p "$RUNNER_TEMP/package"
+          file=$(npm pack --pack-destination "$RUNNER_TEMP/package" | tail -1)
+          echo "file=$file" >> "$GITHUB_OUTPUT"
+          tar tzf "$RUNNER_TEMP/package/$file"
+      - name: Build the fixture site from the tarball
+        working-directory: fixture
+        run: |
+          npm ci
+          npm install --no-save "$RUNNER_TEMP/package/${{ steps.pack.outputs.file }}"
+          test ! -L node_modules/@altium-developer/docusaurus-theme
+          npm run build
+      - uses: actions/upload-artifact@v7
+        with:
+          name: package
+          path: ${{ runner.temp }}/package/${{ steps.pack.outputs.file }}
+          if-no-files-found: error

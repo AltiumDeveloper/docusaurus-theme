@@ -1,0 +1,10 @@
+node_modules/
+*.tgz
+
+# The fixture site's build output and caches
+fixture/build/
+fixture/.docusaurus/
+fixture/static/search-index.json
+
+# Editor settings (machine-local)
+.vscode/
